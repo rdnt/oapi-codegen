@@ -798,17 +798,17 @@ func (siw *ServerInterfaceWrapper) {{$opid}}(c *gin.Context) {
   var {{$varName := .GoVariableName}}{{$varName}} {{.TypeDef}}
 
   {{if .IsPassThrough}}
-  {{$varName}} = c.Query("{{.ParamName}}")
+  {{$varName}} = c.Param("{{.ParamName}}")
   {{end}}
   {{if .IsJson}}
-  err = json.Unmarshal([]byte(c.Query("{{.ParamName}}")), &{{$varName}})
+  err = json.Unmarshal([]byte(c.Param("{{.ParamName}}")), &{{$varName}})
   if err != nil {
     c.JSON(http.StatusBadRequest, gin.H{"msg": "Error unmarshaling parameter '{{.ParamName}}' as JSON"})
     return
   }
   {{end}}
   {{if .IsStyled}}
-  err = runtime.BindStyledParameter("{{.Style}}",{{.Explode}}, "{{.ParamName}}", c.Query("{{.ParamName}}"), &{{$varName}})
+  err = runtime.BindStyledParameter("{{.Style}}",{{.Explode}}, "{{.ParamName}}", c.Param("{{.ParamName}}"), &{{$varName}})
   if err != nil {
     c.JSON(http.StatusBadRequest, gin.H{"msg": fmt.Sprintf("Invalid format for parameter {{.ParamName}}: %s", err)})
     return
@@ -1288,4 +1288,3 @@ func Parse(t *template.Template) (*template.Template, error) {
 	}
 	return t, nil
 }
-
